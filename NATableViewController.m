@@ -12,6 +12,8 @@
 
 #import "UITableView+na.h"
 
+#import "ISRefreshControl.h"
+
 @interface NATableViewController ()
 
 @end
@@ -96,7 +98,8 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     if(self.enableRefleshControl){
-        self.refreshControl = [[UIRefreshControl alloc] init];
+        self.refreshControl = (id)[[ISRefreshControl alloc] init];
+//        self.refreshControl = [[UIRefreshControl alloc] init];
         [self.refreshControl addTarget:self action:@selector(refreshed:) forControlEvents:UIControlEventValueChanged];
     }
 }
