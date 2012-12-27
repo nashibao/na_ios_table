@@ -1,21 +1,21 @@
 //
-//  NATextLabelCell.m
+//  NADictionaryTableViewCell.m
 //  SK3
 //
-//  Created by nashibao on 2012/10/15.
+//  Created by nashibao on 2012/12/27.
 //  Copyright (c) 2012年 s-cubism. All rights reserved.
 //
 
-#import "NATextLabelCell.h"
+#import "NADictionaryTableViewCell.h"
 
-@implementation NATextLabelCell
+@implementation NADictionaryTableViewCell
 
-- (NSString *)textFieldKey{
-    return @"text";
+- (NSString *)text:(id)data{
+    return data[@"text"];
 }
 
-- (NSString *)detailTextFieldKey{
-    return @"detailText";
+- (NSString *)detailText:(id)data{
+    return data[@"detailText"];
 }
 
 - (void)setData:(id)data{
@@ -23,8 +23,8 @@
         [self.textLabel setText:data];
         [self.detailTextLabel setText:@""];
     }else if([data isKindOfClass:[NSDictionary class]]){
-        [self.textLabel setText:data[[self textFieldKey]]];
-        [self.detailTextLabel setText:data[[self detailTextFieldKey]]];
+        [self.textLabel setText:[self text:data]];
+        [self.detailTextLabel setText:[self detailText:data]];
     }else{
         [self.textLabel setText:@""];
         [self.detailTextLabel setText:@""];

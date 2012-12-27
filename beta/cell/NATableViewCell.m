@@ -1,5 +1,5 @@
 //
-//  NATextLabelCell.h
+//  NATextLabelCell.m
 //  SK3
 //
 //  Created by nashibao on 2012/10/15.
@@ -8,9 +8,6 @@
 
 #import "NATableViewCell.h"
 
-@interface NATextLabelCell : NATableViewCell
-
-- (NSString *)textFieldKey;
-- (NSString *)detailTextFieldKey;
+@implementation NATableViewCell
 
 @end

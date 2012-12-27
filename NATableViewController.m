@@ -20,21 +20,21 @@
 
 @implementation NATableViewController
 
-//initialization -------------------------
-- (void)initialize{
+#pragma mark initialization
+
+- (void)_setupTableViewController{
+    _isLoading = NO;
     self.isStaticTable = NO;
     self.cellClass = [UITableViewCell class];
     self.cellIdentifier = @"Cell";
     self.cellAccessoryType = UITableViewCellAccessoryNone;
-    /*
-     implementation
-     */
+    [self setupTableViewController];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder{
     self = [super initWithCoder:aDecoder];
     if(self){
-        [self initialize];
+        [self _setupTableViewController];
     }
     return self;
 }
@@ -42,7 +42,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil{
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if(self){
-        [self initialize];
+        [self _setupTableViewController];
     }
     return self;
 }
@@ -50,93 +50,38 @@
 - (id)initWithStyle:(UITableViewStyle)style{
     self = [super initWithStyle:style];
     if(self){
-        [self initialize];
+        [self _setupTableViewController];
     }
     return self;
 }
 
 
-//update cells ---------------------------------
-
-- (void)initializeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath reuseIdentifier:(NSString *)reuseIdentifier{
-    /*
-     implementation
-     */
-}
-
-- (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
-    /*
-     implementation
-     */
-    if([cell isKindOfClass:[NATableViewCell class]]){
-        NATableViewCell *ncell = (NATableViewCell *)cell;
-//        ncell.indexPath = indexPath;
-        ncell.tableViewController = self;
-    }
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSIndexPath *oldIndexPath = self.selectedIndexPath;
-    NSArray *temp = nil;
-    if(oldIndexPath
-       &&
-       (oldIndexPath.section != indexPath.section || oldIndexPath.row != indexPath.row)
-       &&
-       [self.tableView hasIndexPath:oldIndexPath]
-       ){
-        temp = @[oldIndexPath, indexPath];
-    }else{
-        temp = @[indexPath];
-    }
-    self.selectedIndexPath = indexPath;
-    if(!self.isStaticTable){
-        [tableView reloadRowsAtIndexPaths:temp withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-}
+#pragma mark UIViewController delegate
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     if(self.enableRefleshControl){
         self.refreshControl = (id)[[ISRefreshControl alloc] init];
-//        self.refreshControl = [[UIRefreshControl alloc] init];
         [self.refreshControl addTarget:self action:@selector(refreshed:) forControlEvents:UIControlEventValueChanged];
     }
 }
 
-- (void)preLoadHandler{
-    [self.tableView reloadData];
-    [self.refreshControl beginRefreshing];
+#pragma mark UITableViewDataSource delegate カスタマイズ部分
+
+
+- (void)initializeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath reuseIdentifier:(NSString *)reuseIdentifier{
 }
 
-- (void)postLoadHandlerWithError:(NSError *)err{
-    [self.tableView reloadData];
-    [self.refreshControl endRefreshing];
-    if(err){
-        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"データの取得に失敗しました．"];
-        [sheet addButtonWithTitle:@"再取得" handler:^{
-            [self load];
-        }];
-        [sheet setCancelButtonWithTitle:@"何もしない．" handler:nil];
-        [sheet showInView:self.view];
+- (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
+    //    NATableViewCellの場合の対応
+    if([cell isKindOfClass:[NATableViewCell class]]){
+        NATableViewCell *ncell = (NATableViewCell *)cell;
+        ncell.tableViewController = self;
     }
 }
 
-- (void)load{
-    [self preLoadHandler];
-}
 
-- (void)refreshed:(UIRefreshControl *)control{
-    [self load];
-}
-
-#pragma mark TODO: 汎用化したい, 基本的にはbackボタンで戻ってきたときの処理．
-- (void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-}
-
-#pragma mark - Table view delegate
-
+#pragma mark UITableViewDataSource delegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = nil;
@@ -157,5 +102,68 @@
     
     return cell;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+//    selectedIndexPathのアップデートと、選択時のアニメーションの自動化
+    NSIndexPath *oldIndexPath = self.selectedIndexPath;
+    NSArray *temp = nil;
+    if(oldIndexPath
+       &&
+       (oldIndexPath.section != indexPath.section || oldIndexPath.row != indexPath.row)
+       &&
+       [self.tableView hasIndexPath:oldIndexPath]
+       ){
+        temp = @[oldIndexPath, indexPath];
+    }else{
+        temp = @[indexPath];
+    }
+    self.selectedIndexPath = indexPath;
+    if(!self.isStaticTable){
+        [tableView reloadRowsAtIndexPaths:temp withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
+#pragma mark table apis カスタマイズ部分
+
+- (void)setupTableViewController{}
+
+
+- (void)updateTable{
+    [self.tableView reloadData];
+}
+
+- (void)loadData{
+    [self willLoadData];
+    [self didLoadHandlerWithError:nil];
+}
+
+#pragma mark refresh control
+
+- (void)willLoadData{
+    _isLoading = YES;
+    [self.refreshControl beginRefreshing];
+    [self updateTable];
+}
+
+- (void)didLoadHandlerWithError:(NSError *)err{
+    _isLoading = NO;
+    [self.refreshControl endRefreshing];
+    [self updateTable];
+    if(err){
+        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"データの取得に失敗しました．"];
+        [sheet addButtonWithTitle:@"再取得" handler:^{
+            [self loadData];
+        }];
+        [sheet setCancelButtonWithTitle:@"何もしない．" handler:nil];
+        [sheet showInView:self.view];
+    }
+}
+
+- (void)refreshed:(UIRefreshControl *)control{
+    [self loadData];
+}
+
+#pragma mark - Table view delegate
 
 @end

@@ -1,5 +1,5 @@
 //
-//  NATableViewCell.h
+//  NATextLabelCell.h
 //  SK3
 //
 //  Created by nashibao on 2012/10/15.
@@ -8,12 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
+/*
+ 辞書(json)形式をそのまま扱えるように変更.
+@{
+    @"text": hoge,
+    @"detailText": hoge2,
+}
+ 形式のデータを直接描画する
+ */
 @interface NATableViewCell : UITableViewCell
 
-//@property (strong, nonatomic) NSIndexPath *indexPath;
+// tableViewへのweak参照
 @property (weak, nonatomic) UITableViewController *tableViewController;
-@property (strong, nonatomic) UIColor *defaultBackgroundColor;
 
+// 描画とデータが一体の場合に有用
 @property (strong, nonatomic) id data;
 
 @end

@@ -14,8 +14,8 @@
 
 @implementation NAFRCTableViewController
 
-- (void)initialize{
-    [super initialize];
+- (void)setupTableViewController{
+    [super setupTableViewController];
     self.isStaticTable = NO;
     self.cellStyle = UITableViewCellStyleDefault;
 }
@@ -64,20 +64,24 @@
     [cell.textLabel setText:[NSString stringWithFormat:@"%@",mo]];
 }
 
-- (void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+- (void)updateTable{
     [self.fetchedResultsController performFetch:nil];
     [self.tableView reloadData];
 }
 
-- (void)preLoadHandler{
-    [self.fetchedResultsController performFetch:nil];
-    [super preLoadHandler];
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self updateTable];
 }
 
-- (void)postLoadHandlerWithError:(NSError *)err{
-    [self.fetchedResultsController performFetch:nil];
-    [super postLoadHandlerWithError:err];
+- (void)willLoadData{
+    [self updateTable];
+    [super willLoadData];
+}
+
+- (void)didLoadHandlerWithError:(NSError *)err{
+    [self updateTable];
+    [super didLoadHandlerWithError:err];
 }
 
 @end

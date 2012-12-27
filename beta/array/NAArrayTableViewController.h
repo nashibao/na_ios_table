@@ -10,14 +10,16 @@
 
 #import "NAFormValue.h"
 
+/*
+ 辞書形式でデータを描画できるタイプのtable.
+ Form用のTableViewで使用．
+ */
 @interface NAArrayTableViewController : NATableViewController
 
 @property (strong, nonatomic) NSArray *sections;
 
 - (NSArray *)sectionRows:(id)section;
-//- (id)rowData:(id)row;
 - (NAFormTableSelectActionType)rowActionType:(id)row;
-//- (id)rowActionBackBlock:(id)row;
 - (id)rowAtIndexPath:(NSIndexPath *)indexPath;
 - (id)indexPathOfRow:(id)row;
 

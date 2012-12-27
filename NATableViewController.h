@@ -8,9 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "NAViewControllerProtocol.h"
-
-@interface NATableViewController : UITableViewController<NAViewControllerProtocol>
+@interface NATableViewController : UITableViewController
 
 /*
  default: NO
@@ -18,25 +16,64 @@
  */
 @property (nonatomic) BOOL isStaticTable;
 
-@property (nonatomic) UITableViewCellStyle cellStyle;
-
-@property (strong, nonatomic) Class cellClass;
-
-@property (strong, nonatomic) NSString *cellIdentifier;
-
+/*
+ UITableViewのselectedIndexPathとは異なり、UINavigationBarのBackボタンなどで戻ってきても選択されたままに
+ なる．
+ */
 @property (strong, nonatomic) NSIndexPath *selectedIndexPath;
 
-@property (nonatomic) BOOL enableRefleshControl;
-
+// デフォルトのセルスタイル
+@property (nonatomic) UITableViewCellStyle cellStyle;
+@property (strong, nonatomic) Class cellClass;
+@property (strong, nonatomic) NSString *cellIdentifier;
 @property (nonatomic) UITableViewCellAccessoryType cellAccessoryType;
 
+
+// ローディング中かどうか
+@property (readonly, nonatomic) BOOL isLoading;
+
+
+#pragma mark UITableViewDataSource delegateのラッパー
+
+//セル初期化
 - (void)initializeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath reuseIdentifier:(NSString *)reuseIdentifier;
+
 - (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
 
-- (void)preLoadHandler;
-- (void)postLoadHandlerWithError:(NSError *)err;
-- (void)load;
-- (void)refreshed:(UIRefreshControl *)control;
+#pragma mark オーバーライドするメソッド
+
+//初期化
+- (void)setupTableViewController;
+
+
+/*
+ 表示のupdate.
+ */
+- (void)updateTable;
+
+
+/*
+ データロード
+ */
+- (void)loadData;
+
+
+/*
+ default: NO
+ */
+@property (nonatomic) BOOL enableRefleshControl;
+
+#pragma mark データロード(アップロード)delegate(風)
+
+/*
+ ロード前
+ */
+- (void)willLoadData;
+
+/*
+ ロード後
+ */
+- (void)didLoadHandlerWithError:(NSError *)err;
 
 @end

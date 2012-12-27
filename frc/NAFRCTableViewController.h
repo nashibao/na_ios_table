@@ -13,18 +13,14 @@
 #import "NATableViewController.h"
 
 /*
- template tableviewcontroller class which use with a frc.
- 
- you should use this by subclassing this.
- 
- to use this, these two lines are needed.
- self.fetchedResultsController = frc;
- frc.delegate = self;
+ frcをつかったtable.
  */
 @interface NAFRCTableViewController : NATableViewController
 
+//frc
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
+//frcとcellのバインド
 - (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath withMO:(NSManagedObject *)mo;
 
 @end
