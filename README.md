@@ -3,7 +3,7 @@
 `na_ios_table`は、coredataに`UITableViewController`を接続する際に必要な多くの処理を肩代わりしてくれる便利なモジュールです．
 まずは例を見てみましょう．
 
-```
+```objective-c
 #import "NAFRCTableViewController.h"
 @interface HogeTableViewController : NAFRCTableViewController
 @end
@@ -23,7 +23,7 @@ That's it!これだけです．これで、`NAFRCTableViewController`は`name=@"
 
 `UITableViewCell`には`NSManagedObjectID`が表示されているかと思います．それではセルをカスタムしましょう．
 
-```
+```objective-c
 - (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath withMO:(NSManagedObject *)mo{
     Hoge *hoge = (Hoge *)mo;
     [cell.textLabel setText:hoge.title];
@@ -33,7 +33,7 @@ That's it!これだけです．これで、`NAFRCTableViewController`は`name=@"
 
 `setupTableViewController`でデフォルトのセルに関する設定ができます．
 
-```
+```objective-c
 - (void)setupTableViewController{
     self.cellIdentifier = @"HogeCell";
     self.cellClass = [HogeCell class];
@@ -45,7 +45,7 @@ That's it!これだけです．これで、`NAFRCTableViewController`は`name=@"
 
 また`NATableViewController`では「押し下げて取得」も自動で追加することが出来ます．
 
-```
+```objective-c
 - (void)setupTableViewController{
 	...
     self.enableRefleshControl = YES;
