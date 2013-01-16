@@ -89,6 +89,7 @@
     if(self.isStaticTable){
         cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
         [cell setAccessoryType:self.cellAccessoryType];
+        [self initializeCell:cell atIndexPath:indexPath reuseIdentifier:self.cellIdentifier];
     }else{
         cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
         if(!cell){
