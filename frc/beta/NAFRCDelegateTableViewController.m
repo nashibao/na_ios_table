@@ -16,14 +16,14 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    NSLog(@"%s",__FUNCTION__);
+    //gNSLog(@"%s",__FUNCTION__);
     UITableView *tableView;
     if(controller == self.fetchedResultsController){
         tableView = self.tableView;
     }else{
         tableView = self.searchDisplayController.searchResultsTableView;
     }
-    NSLog(@"%s:%d",__FUNCTION__,sectionIndex);
+    //gNSLog(@"%s:%d",__FUNCTION__,sectionIndex);
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -35,13 +35,13 @@
             
         case NSFetchedResultsChangeUpdate:
             
-            NSLog(@"%s",__FUNCTION__);
+            //gNSLog(@"%s",__FUNCTION__);
             
             break;
         case NSFetchedResultsChangeMove:
             
             
-            NSLog(@"%s",__FUNCTION__);
+            //gNSLog(@"%s",__FUNCTION__);
             
             break;
     }
